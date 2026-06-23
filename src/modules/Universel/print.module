@@ -2,8 +2,12 @@ local Module = {}
 Module.Name = "PrintTest"
 Module.Extension = ".module"
 
-Module.Execute = function()
-	print("USE MODULE")
+Module.Execute = function(customArgument)
+	if customArgument and customArgument ~= "" then
+		print(customArgument)
+	else
+		print("USE MODULE")
+	end
 end
 
 return Module
