@@ -1,6 +1,4 @@
 local Module = {}
-Module.Name = "PrintTest"
-Module.Extension = ".module"
 
 Module.Execute = function(customArgument)
 	if customArgument and customArgument ~= "" then
