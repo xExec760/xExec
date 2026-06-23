@@ -7,11 +7,18 @@ Module.Execute = function(customArgument)
 	local isUnesp = false
 	local target = ""
 	
-	if string.sub(rawInput, 1, 6) == "unesp_" then
+	local lowInput = string.lower(rawInput)
+	if lowInput == "unesp" then
 		isUnesp = true
-		target = string.lower(string.sub(rawInput, 7))
+		target = ""
+	elseif string.sub(lowInput, 1, 6) == "unesp " then
+		isUnesp = true
+		target = string.sub(lowInput, 7)
+	elseif string.sub(lowInput, 1, 6) == "unesp_" then
+		isUnesp = true
+		target = string.sub(lowInput, 7)
 	else
-		target = string.lower(rawInput)
+		target = lowInput
 	end
 	
 	if target == "" or target == "all" then
