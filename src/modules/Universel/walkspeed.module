@@ -1,1 +1,65 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local Module = {}
+local LoopConnection = nil
+
+Module.Execute = function(ArgumentString)
+	local InputString = ArgumentString or ""
+	local LowercaseInput = string.lower(InputString)
+	
+	local CommandMode = "ws"
+	local CleanNumericSegment = ""
+	
+	if string.sub(LowercaseInput, 1, 7) == "loopws " then
+		CommandMode = "loopws"
+		CleanNumericSegment = string.sub(InputString, 8)
+	elseif LowercaseInput == "loopws" then
+		CommandMode = "loopws"
+		CleanNumericSegment = ""
+	elseif string.sub(LowercaseInput, 1, 3) == "ws " then
+		CommandMode = "ws"
+		CleanNumericSegment = string.sub(InputString, 4)
+	elseif string.sub(LowercaseInput, 1, 10) == "walkspeed " then
+		CommandMode = "ws"
+		CleanNumericSegment = string.sub(InputString, 11)
+	elseif string.sub(LowercaseInput, 1, 14) == "loopwalkspeed " then
+		CommandMode = "loopws"
+		CleanNumericSegment = string.sub(InputString, 15)
+	else
+		CleanNumericSegment = InputString
+	end
+	
+	local NewSpeed = tonumber(CleanNumericSegment) or 16
+	
+	if LoopConnection then
+		LoopConnection:Disconnect()
+		LoopConnection = nil
+	end
+	
+	local LocalPlayer = Players.LocalPlayer
+	if not LocalPlayer then return end
+	
+	if CommandMode == "loopws" then
+		LoopConnection = RunService.RenderStepped:Connect(function()
+			local Character = LocalPlayer.Character
+			if Character then
+				local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+				if Humanoid then
+					Humanoid.WalkSpeed = NewSpeed
+				end
+			end
+		end)
+	else
+		local Character = LocalPlayer.Character
+		if Character then
+			local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+			if Humanoid then
+				Humanoid.WalkSpeed = NewSpeed
+			end
+		end
+	end
+end
+
+return Module
 
