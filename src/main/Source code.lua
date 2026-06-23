@@ -1,3 +1,6 @@
+if getgenv().is_loaded then return end
+getgenv().is_loaded = true
+
 local cg = game:GetService("CoreGui")
 local ts = game:GetService("TweenService")
 local cp = game:GetService("ContentProvider")
@@ -64,7 +67,7 @@ local cn_ls = Instance.new("UICorner")
 cn_ls.Parent = ls
 
 local st_ls = Instance.new("UIStroke")
-st_ls.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+st_ls.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 st_ls.Thickness = 0.9
 st_ls.Color = Color3.fromRGB(176, 176, 176)
 st_ls.Parent = ls
@@ -94,7 +97,7 @@ local cn_tb = Instance.new("UICorner")
 cn_tb.Parent = tb
 
 local st_tb = Instance.new("UIStroke")
-st_tb.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+st_tb.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 st_tb.Thickness = 0.9
 st_tb.Color = Color3.fromRGB(176, 176, 176)
 st_tb.Transparency = 1
@@ -125,7 +128,7 @@ cn_tg.CornerRadius = UDim.new(1, 0)
 cn_tg.Parent = tg
 
 local st_tg = Instance.new("UIStroke")
-st_tg.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+st_tg.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 st_tg.Transparency = 1
 st_tg.Parent = tg
 
@@ -135,6 +138,7 @@ ar_tg.Parent = tg
 
 local visible = true
 local md_list = {}
+local esp_active = false
 
 tg.MouseButton1Click:Connect(function()
 	visible = not visible
@@ -160,12 +164,16 @@ tb.FocusLost:Connect(function(ep)
 		local mt_nm = ""
 		
 		if string.sub(low, 1, 5) == "unesp" then
-			local targetMod = md_list["esp"]
-			if targetMod and type(targetMod.Execute) == "function" then
-				local start = 7
-				local arg = string.sub(txt, start) or ""
+			for name, tbl in pairs(md_list) do
+				if string.find(name, "esp") then
+					mt_md = tbl
+					break
+				end
+			end
+			if mt_md and type(mt_md.Execute) == "function" then
 				sd:Play()
-				targetMod.Execute("unesp_" .. arg)
+				esp_active = false
+				mt_md.Execute(txt)
 			end
 		else
 			for name, tbl in pairs(md_list) do
@@ -185,6 +193,9 @@ tb.FocusLost:Connect(function(ep)
 				local start = string.len(mt_nm) + 2
 				local arg = string.sub(txt, start) or ""
 				sd:Play()
+				if string.lower(mt_nm) == "esp" then
+					esp_active = true
+				end
 				mt_md.Execute(arg)
 			end
 		end
@@ -253,7 +264,17 @@ for _, info in ipairs(data) do
 		btn.MouseButton1Click:Connect(function()
 			if md and md.Execute then
 				sd:Play()
-				md.Execute("")
+				if string.lower(clean) == "esp" then
+					if esp_active then
+						esp_active = false
+						md.Execute("unesp")
+					else
+						esp_active = true
+						md.Execute("")
+					end
+				else
+					md.Execute("")
+				end
 			end
 		end)
 	end
