@@ -1,0 +1,9 @@
+local Module = {}
+Module.Name = "PrintTest"
+Module.Extension = ".module"
+
+Module.Execute = function()
+	print("USE MODULE")
+end
+
+return Module
