@@ -175,6 +175,17 @@ tb.FocusLost:Connect(function(ep)
 				esp_active = false
 				mt_md.Execute(txt)
 			end
+		elseif string.sub(low, 1, 3) == "ws " or low == "ws" or string.sub(low, 1, 7) == "loopws " or low == "loopws" then
+			for name, tbl in pairs(md_list) do
+				if string.find(name, "walkspeed") then
+					mt_md = tbl
+					break
+				end
+			end
+			if mt_md and type(mt_md.Execute) == "function" then
+				sd:Play()
+				mt_md.Execute(txt)
+			end
 		else
 			for name, tbl in pairs(md_list) do
 				local len = string.len(name)
