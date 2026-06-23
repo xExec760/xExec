@@ -1,0 +1,83 @@
+local pl = game:GetService("Players")
+
+local Module = {}
+
+Module.Execute = function(customArgument)
+	local target = string.lower(customArgument or "")
+	
+	if target == "" or target == "all" then
+		for _, p in ipairs(pl:GetPlayers()) do
+			if p ~= pl.LocalPlayer and p.Character then
+				local char = p.Character
+				
+				for _, child in ipairs(char:GetChildren()) do
+					if child:IsA("Highlight") or child:IsA("BillboardGui") then
+						child:Destroy()
+					end
+				end
+				
+				local hl = Instance.new("Highlight")
+				hl.FillColor = Color3.fromRGB(255, 0, 0)
+				hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+				hl.FillTransparency = 0.5
+				hl.OutlineTransparency = 0
+				hl.Parent = char
+
+				local bg = Instance.new("BillboardGui")
+				bg.Size = UDim2.new(0, 200, 0, 50)
+				bg.AlwaysOnTop = true
+				bg.ExtentsOffset = Vector3.new(0, 3, 0)
+				bg.Parent = char
+
+				local tl = Instance.new("TextLabel")
+				tl.Size = UDim2.new(1, 0, 1, 0)
+				tl.BackgroundTransparency = 1
+				tl.Text = p.Name
+				tl.TextColor3 = Color3.fromRGB(255, 255, 255)
+				tl.TextStrokeTransparency = 0
+				tl.TextSize = 14
+				tl.Font = Enum.Font.SourceSansBold
+				tl.Parent = bg
+			end
+		end
+	else
+		for _, p in ipairs(pl:GetPlayers()) do
+			if p ~= pl.LocalPlayer and string.sub(string.lower(p.Name), 1, string.len(target)) == target then
+				if p.Character then
+					local char = p.Character
+					
+					for _, child in ipairs(char:GetChildren()) do
+						if child:IsA("Highlight") or child:IsA("BillboardGui") then
+							child:Destroy()
+						end
+					end
+					
+					local hl = Instance.new("Highlight")
+					hl.FillColor = Color3.fromRGB(255, 0, 0)
+					hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+					hl.FillTransparency = 0.5
+					hl.OutlineTransparency = 0
+					hl.Parent = char
+
+					local bg = Instance.new("BillboardGui")
+					bg.Size = UDim2.new(0, 200, 0, 50)
+					bg.AlwaysOnTop = true
+					bg.ExtentsOffset = Vector3.new(0, 3, 0)
+					bg.Parent = char
+
+					local tl = Instance.new("TextLabel")
+					tl.Size = UDim2.new(1, 0, 1, 0)
+					tl.BackgroundTransparency = 1
+					tl.Text = p.Name
+					tl.TextColor3 = Color3.fromRGB(255, 255, 255)
+					tl.TextStrokeTransparency = 0
+					tl.TextSize = 14
+					tl.Font = Enum.Font.SourceSansBold
+					tl.Parent = bg
+				end
+			end
+		end
+	end
+end
+
+return Module
